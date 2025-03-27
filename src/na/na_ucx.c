@@ -938,6 +938,7 @@ NA_PLUGIN const struct na_class_ops NA_PLUGIN_OPS(ucx) = {
     na_ucx_addr_get_serialize_size,       /* addr_get_serialize_size */
     na_ucx_addr_serialize,                /* addr_serialize */
     na_ucx_addr_deserialize,              /* addr_deserialize */
+    NULL,                                 /* addr_set_firewall */
     na_ucx_msg_get_max_unexpected_size,   /* msg_get_max_unexpected_size */
     na_ucx_msg_get_max_expected_size,     /* msg_get_max_expected_size */
     NULL,                                 /* msg_get_unexpected_header_size */

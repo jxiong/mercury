@@ -9,6 +9,7 @@
 #include "mercury_private.h"
 
 #include "mercury_atomic_queue.h"
+#include "mercury_bulk.h"
 #include "mercury_error.h"
 #include "mercury_event.h"
 #include "mercury_hash_table.h"
@@ -6763,6 +6764,25 @@ HG_Core_addr_deserialize(hg_core_class_t *hg_core_class, hg_core_addr_t *addr_p,
 
     HG_LOG_SUBSYS_DEBUG(
         addr, "Deserialized into new address (%p)", (void *) *addr_p);
+
+    return HG_SUCCESS;
+
+error:
+    return ret;
+}
+
+hg_return_t
+HG_Core_addr_set_firewall(hg_core_class_t *hg_core_class, hg_core_addr_t addr)
+{
+    hg_return_t ret;
+
+    HG_CHECK_SUBSYS_ERROR(addr, hg_core_class == NULL, error, ret,
+        HG_INVALID_ARG, "NULL HG core class");
+    HG_CHECK_SUBSYS_ERROR(addr, addr == NULL, error, ret, HG_INVALID_ARG,
+        "NULL pointer to HG core address");
+
+    ret = NA_Addr_set_firewall(hg_core_class->na_class, addr->na_addr);
+    HG_CHECK_SUBSYS_HG_ERROR(addr, error, ret, "Could not update address from");
 
     return HG_SUCCESS;
 

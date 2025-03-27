@@ -2612,6 +2612,7 @@ const struct na_class_ops NA_PSM_PLUGIN_VARIABLE = {
     na_psm_addr_get_serialize_size,        /* addr_get_serialize_size */
     na_psm_addr_serialize,                 /* addr_serialize */
     na_psm_addr_deserialize,               /* addr_deserialize */
+    NULL,                                  /* addr_set_firewall */
     na_psm_msg_get_max_unexpected_size,    /* msg_get_max_unexpected_size */
     na_psm_msg_get_max_expected_size,      /* msg_get_max_expected_size */
     na_psm_msg_get_unexpected_header_size, /* msg_get_unexpected_header_size */

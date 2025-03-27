@@ -1817,6 +1817,10 @@ static na_return_t
 na_ofi_addr_deserialize(
     na_class_t *na_class, na_addr_t **addr_p, const void *buf, size_t buf_size);
 
+/* addr_deserialize */
+static na_return_t
+na_ofi_addr_set_firewall(na_class_t *na_class, na_addr_t *addr);
+
 /* msg_get_max_unexpected_size */
 static NA_INLINE size_t
 na_ofi_msg_get_max_unexpected_size(const na_class_t *na_class);
@@ -1978,6 +1982,7 @@ NA_PLUGIN const struct na_class_ops NA_PLUGIN_OPS(ofi) = {
     na_ofi_addr_get_serialize_size,        /* addr_get_serialize_size */
     na_ofi_addr_serialize,                 /* addr_serialize */
     na_ofi_addr_deserialize,               /* addr_deserialize */
+    na_ofi_addr_set_firewall,              /* addr_set_firewall */
     na_ofi_msg_get_max_unexpected_size,    /* msg_get_max_unexpected_size */
     na_ofi_msg_get_max_expected_size,      /* msg_get_max_expected_size */
     na_ofi_msg_get_unexpected_header_size, /* msg_get_unexpected_header_size */
@@ -6685,6 +6690,8 @@ na_ofi_cq_process_fi_src_addr(struct na_ofi_class *na_ofi_class,
                       ? (struct na_ofi_addr *) src_addr
                       : na_ofi_fi_addr_map_lookup(
                             &na_ofi_class->domain->addr_map, &src_addr);
+
+
     NA_CHECK_SUBSYS_ERROR(addr, na_ofi_addr == NULL, error, ret, NA_NOENTRY,
         "No entry found for previously inserted src addr");
 
@@ -7674,8 +7681,9 @@ na_ofi_initialize(
     }
     if (na_ofi_class->fi_info->caps & FI_SOURCE_ERR) {
         na_ofi_class->cq_poll = na_ofi_cq_poll_fi_source;
-    } else
+    } else {
         na_ofi_class->cq_poll = na_ofi_cq_poll_no_source;
+    }
 
     /* Open fabric */
     ret = na_ofi_fabric_open(
@@ -8248,6 +8256,32 @@ na_ofi_addr_deserialize(
     *addr_p = (na_addr_t *) na_ofi_addr;
 
     return NA_SUCCESS;
+
+error:
+    return ret;
+}
+
+static na_return_t
+na_ofi_addr_set_firewall(na_class_t *na_class, na_addr_t *addr)
+{
+    struct na_ofi_class *na_ofi_class = NA_OFI_CLASS(na_class);
+    struct na_ofi_addr *na_ofi_addr = (struct na_ofi_addr *)addr;
+    uint64_t fi_flags = 0;
+    na_return_t ret = NA_SUCCESS;
+    int rc;
+
+#if 0 && FI_VERSION_GE(FI_COMPILE_VERSION, FI_VERSION(1, 20))
+    fi_flags |= FI_FIREWALL_ADDR;
+#endif
+
+    if (fi_flags == 0)
+        return NA_SUCCESS;
+
+    /* Insert addr into AV if key not found */
+    rc = fi_av_insert(na_ofi_class->domain->fi_av, &na_ofi_addr->addr_key.addr,
+        1, &na_ofi_addr->fi_addr, fi_flags, NULL);
+    NA_CHECK_SUBSYS_ERROR(addr, rc < 1, error, ret, na_ofi_errno_to_na(-rc),
+        "fi_av_insert() failed, inserted: %d", rc);
 
 error:
     return ret;

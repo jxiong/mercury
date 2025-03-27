@@ -473,6 +473,7 @@ const struct na_class_ops NA_PLUGIN_OPS(bmi) = {
     NULL,                                 /* addr_get_serialize_size */
     NULL,                                 /* addr_serialize */
     NULL,                                 /* addr_deserialize */
+    NULL,                                 /* addr_set_firewall */
     na_bmi_msg_get_max_unexpected_size,   /* msg_get_max_unexpected_size */
     na_bmi_msg_get_max_expected_size,     /* msg_get_max_expected_size */
     NULL,                                 /* msg_get_unexpected_header_size */
