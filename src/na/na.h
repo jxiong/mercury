@@ -1038,6 +1038,7 @@ struct na_class_ops {
         na_class_t *na_class, void *buf, size_t buf_size, na_addr_t *addr);
     na_return_t (*addr_deserialize)(na_class_t *na_class, na_addr_t **addr_p,
         const void *buf, size_t buf_size);
+    na_return_t (*addr_update)(na_class_t *na_class, na_addr_t *addr, unsigned long flags);
     size_t (*msg_get_max_unexpected_size)(const na_class_t *na_class);
     size_t (*msg_get_max_expected_size)(const na_class_t *na_class);
     size_t (*msg_get_unexpected_header_size)(const na_class_t *na_class);
@@ -1158,6 +1159,13 @@ NA_Addr_get_serialize_size(na_class_t *na_class, na_addr_t *addr)
     return (na_class->ops->addr_get_serialize_size)
                ? na_class->ops->addr_get_serialize_size(na_class, addr)
                : 0;
+}
+
+/*---------------------------------------------------------------------------*/
+static NA_INLINE na_return_t
+NA_Addr_update(na_class_t *na_class, na_addr_t *addr, unsigned long flags)
+{
+    return na_class->ops->addr_update(na_class, addr, flags);
 }
 
 /*---------------------------------------------------------------------------*/

@@ -74,6 +74,10 @@ typedef hg_return_t (*hg_core_cb_t)(
 /* Flags */
 #define HG_CORE_MORE_DATA (1 << 0) /* More data required */
 
+enum addr_update_flags {
+    HG_ADDR_FIREWALL = (1 << 0),
+};
+
 /*********************/
 /* Public Prototypes */
 /*********************/
@@ -755,6 +759,20 @@ HG_Core_addr_deserialize(hg_core_class_t *hg_core_class, hg_core_addr_t *addr_p,
     const void *buf, hg_size_t buf_size);
 
 /**
+ * Update address with a flag. Right now it's only used to mark an adddress
+ * is behind firewall.
+ *
+ * \param hg_core_class [IN]    pointer to HG core class
+ * \param addr [IN]             pointer to abstract address
+ * \param flags [IN]            flags for address
+ *
+ * \return HG_SUCCESS or corresponding HG error code
+ */
+HG_PUBLIC hg_return_t
+HG_Core_addr_update(hg_core_class_t *hg_core_class, hg_core_addr_t addr,
+    unsigned long flags);
+
+/**
  * Initiate a new HG RPC using the specified function ID and the local/remote
  * target defined by addr. The HG handle created can be used to query input
  * and output buffers, as well as issuing the RPC by using HG_Core_forward().
@@ -1105,7 +1123,7 @@ struct hg_core_addr {
 #ifdef NA_HAS_SM
     na_addr_t *na_sm_addr; /* NA SM address */
 #endif
-    uint8_t is_self; /* Self address */
+    bool is_self; /* Self address */
 };
 
 /* HG core RPC registration info */
