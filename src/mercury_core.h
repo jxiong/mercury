@@ -83,13 +83,14 @@ extern "C" {
 #endif
 
 /**
- * Get information on protocols that are supported by underlying NA plugins. If
- * \info_string is NULL, a list of all supported protocols by all plugins will
- * be returned. The returned list must be freed using
+ * Get information on protocols that are supported by underlying NA plugins.
+ * If \info_string is NULL, a list of all supported protocols by all plugins
+ * will be returned. The returned list must be freed using
  * HG_Core_free_na_protocol_info().
  *
- * \param info_string [IN]          NULL or "<protocol>" or "<plugin+protocol>"
- * \param na_protocol_info_p [OUT]  linked-list of protocol infos
+ * \param info_string [IN]          NULL or "<protocol>" or
+ * "<plugin+protocol>" \param na_protocol_info_p [OUT]  linked-list of
+ * protocol infos
  *
  * \return HG_SUCCESS or corresponding NA error code
  */
@@ -122,9 +123,9 @@ HG_Core_init(
 
 /**
  * Initialize the Mercury layer with options provided by init_info.
- * Must be finalized with HG_Core_finalize(). Using this routine limits the info
- * struct version to 2.2 version.
- * \remark HG_Core_init_opt() may become HG_Core_init() in the future.
+ * Must be finalized with HG_Core_finalize(). Using this routine limits the
+ * info struct version to 2.2 version. \remark HG_Core_init_opt() may become
+ * HG_Core_init() in the future.
  *
  * \param na_info_string [IN]   host address with port number (e.g.,
  *                              "tcp://localhost:3344" or
@@ -179,15 +180,16 @@ HG_Core_cleanup(void);
 /**
  * Set callback that will be triggered when additional data needs to be
  * transferred and HG_Core_set_more_data() has been called, usually when the
- * eager message size is exceeded. This allows upper layers to manually transfer
- * data using bulk transfers for example. The done_callback argument allows the
- * upper layer to notify back once the data has been successfully acquired.
- * The release callback allows the upper layer to release resources that were
- * allocated when acquiring the data.
+ * eager message size is exceeded. This allows upper layers to manually
+ * transfer data using bulk transfers for example. The done_callback
+ * argument allows the upper layer to notify back once the data has been
+ * successfully acquired. The release callback allows the upper layer to
+ * release resources that were allocated when acquiring the data.
  *
  * \param hg_core_class [IN]                pointer to HG core class
- * \param more_data_acquire_callback [IN]   pointer to acquire function callback
- * \param more_data_release_callback [IN]   pointer to release function callback
+ * \param more_data_acquire_callback [IN]   pointer to acquire function
+ * callback \param more_data_release_callback [IN]   pointer to release
+ * function callback
  *
  * \return HG_SUCCESS or corresponding HG error code
  */
@@ -271,8 +273,8 @@ HG_Core_class_get_input_eager_size(
  *
  * \param hg_core_class [IN]    pointer to HG core class
  *
- * \return the maximum size, or 0 if hg_core_class is not a valid class or XDR
- * is being used
+ * \return the maximum size, or 0 if hg_core_class is not a valid class or
+ * XDR is being used
  */
 static HG_INLINE hg_size_t
 HG_Core_class_get_output_eager_size(
@@ -317,7 +319,8 @@ HG_Core_class_get_counters(const hg_core_class_t *hg_core_class,
     struct hg_diag_counters *diag_counters);
 
 /**
- * Create a new context. Must be destroyed by calling HG_Core_context_destroy().
+ * Create a new context. Must be destroyed by calling
+ * HG_Core_context_destroy().
  *
  * \param hg_core_class [IN]    pointer to HG core class
  *
@@ -328,9 +331,9 @@ HG_Core_context_create(hg_core_class_t *hg_core_class) HG_WARN_UNUSED_RESULT;
 
 /**
  * Create a new context with a user-defined context identifier. The context
- * identifier can be used to route RPC requests to specific contexts by using
- * HG_Core_set_target_id().
- * Context must be destroyed by calling HG_Core_context_destroy().
+ * identifier can be used to route RPC requests to specific contexts by
+ * using HG_Core_set_target_id(). Context must be destroyed by calling
+ * HG_Core_context_destroy().
  *
  * \param hg_core_class [IN]    pointer to HG core class
  * \param id [IN]               context ID
@@ -390,7 +393,8 @@ HG_Core_context_get_na_sm(
  *
  * \param context [IN]          pointer to HG core context
  *
- * \return Non-negative integer (max value of 255) or 0 if no ID has been set
+ * \return Non-negative integer (max value of 255) or 0 if no ID has been
+ * set
  */
 static HG_INLINE uint8_t
 HG_Core_context_get_id(const hg_core_context_t *context) HG_WARN_UNUSED_RESULT;
@@ -434,8 +438,8 @@ HG_Core_context_get_completion_count(
 /**
  * Set callback to be called on HG core handle creation. Handles are created
  * both on HG_Core_create() and HG_Core_context_post() calls. This allows
- * upper layers to create and attach data to a handle (using HG_Core_set_data())
- * and later retrieve it using HG_Core_get_data().
+ * upper layers to create and attach data to a handle (using
+ * HG_Core_set_data()) and later retrieve it using HG_Core_get_data().
  *
  * \param context [IN]          pointer to HG core context
  * \param callback [IN]         pointer to function callback
@@ -449,11 +453,11 @@ HG_Core_context_set_handle_create_callback(hg_core_context_t *context,
 
 /**
  * Post requests associated to context in order to receive incoming RPCs.
- * Requests are automatically re-posted after completion until the context is
- * destroyed or HG_Core_context_unpost() is called. Additionally a callback
- * can be triggered on HG handle creation. This allows upper layers to
- * instantiate data that needs to be attached to a handle. Number of requests
- * that are posted can be controlled through HG init info.
+ * Requests are automatically re-posted after completion until the context
+ * is destroyed or HG_Core_context_unpost() is called. Additionally a
+ * callback can be triggered on HG handle creation. This allows upper layers
+ * to instantiate data that needs to be attached to a handle. Number of
+ * requests that are posted can be controlled through HG init info.
  *
  * \param context [IN]          pointer to HG core context
  *
@@ -490,8 +494,8 @@ HG_Core_register(
 
 /**
  * Deregister RPC ID. Further requests with RPC ID will return an error, it
- * is therefore up to the user to make sure that all requests for that RPC ID
- * have been treated before it is unregistered.
+ * is therefore up to the user to make sure that all requests for that RPC
+ * ID have been treated before it is unregistered.
  *
  * \param hg_core_class [IN]    pointer to HG core class
  * \param id [IN]               registered function ID
@@ -515,8 +519,8 @@ HG_Core_registered(hg_core_class_t *hg_core_class, hg_id_t id, uint8_t *flag_p);
 
 /**
  * Register and associate user data to registered function. When
- * HG_Core_finalize() is called, free_callback (if defined) is called to free
- * the registered data.
+ * HG_Core_finalize() is called, free_callback (if defined) is called to
+ * free the registered data.
  *
  * \param hg_core_class [IN]    pointer to HG core class
  * \param id [IN]               registered function ID
@@ -543,11 +547,11 @@ HG_Core_registered_data(
     hg_core_class_t *hg_core_class, hg_id_t id) HG_WARN_UNUSED_RESULT;
 
 /**
- * Disable response for a given RPC ID. This allows an origin process to send an
- * RPC to a target without waiting for a response. The RPC completes locally and
- * the callback on the origin is therefore pushed to the completion queue once
- * the RPC send is completed. By default, all RPCs expect a response to
- * be sent back.
+ * Disable response for a given RPC ID. This allows an origin process to
+ * send an RPC to a target without waiting for a response. The RPC completes
+ * locally and the callback on the origin is therefore pushed to the
+ * completion queue once the RPC send is completed. By default, all RPCs
+ * expect a response to be sent back.
  *
  * \param hg_core_class [IN]    pointer to HG core class
  * \param id [IN]               registered function ID
@@ -578,7 +582,8 @@ HG_Core_registered_disabled_response(
 /**
  * Lookup an addr from a peer address/name. Addresses need to be
  * freed by calling HG_Core_addr_free(). After completion, user callback is
- * placed into a completion queue and can be triggered using HG_Core_trigger().
+ * placed into a completion queue and can be triggered using
+ * HG_Core_trigger().
  *
  * \param context [IN]          pointer to context of execution
  * \param callback [IN]         pointer to function callback
@@ -664,8 +669,8 @@ HG_Core_addr_self(hg_core_class_t *hg_core_class, hg_core_addr_t *addr_p);
 
 /**
  * Duplicate an existing HG abstract address. The duplicated address can be
- * stored for later use and the origin address be freed safely. The duplicated
- * address must be freed with HG_Core_addr_free().
+ * stored for later use and the origin address be freed safely. The
+ * duplicated address must be freed with HG_Core_addr_free().
  *
  * \param addr [IN]             abstract address
  * \param new_addr_p [OUT]      pointer to abstract address
@@ -681,7 +686,8 @@ HG_Core_addr_dup(hg_core_addr_t addr, hg_core_addr_t *new_addr_p);
  * \param addr1 [IN]            abstract address
  * \param addr2 [IN]            abstract address
  *
- * \return HG_TRUE if addresses are determined to be equal, HG_FALSE otherwise
+ * \return HG_TRUE if addresses are determined to be equal, HG_FALSE
+ * otherwise
  */
 HG_PUBLIC uint8_t
 HG_Core_addr_cmp(
@@ -732,6 +738,7 @@ HG_Core_addr_get_serialize_size(
  * \param buf_size [IN]         pointer to buffer size
  * \param flags [IN]            optional flags
  * \param addr [IN]             abstract address
+ * \param flags [IN]            flags to manipuate address cache
  *
  * \return HG_SUCCESS or corresponding HG error code
  */
@@ -740,8 +747,8 @@ HG_Core_addr_serialize(
     void *buf, hg_size_t buf_size, unsigned long flags, hg_core_addr_t addr);
 
 /**
- * Deserialize address from a buffer. The returned address must be freed with
- * HG_Core_addr_free().
+ * Deserialize address from a buffer. The returned address must be freed
+ * with HG_Core_addr_free().
  *
  * \param hg_core_class [IN]    pointer to HG core class
  * \param addr_p [OUT]          pointer to abstract address
@@ -752,13 +759,14 @@ HG_Core_addr_serialize(
  */
 HG_PUBLIC hg_return_t
 HG_Core_addr_deserialize(hg_core_class_t *hg_core_class, hg_core_addr_t *addr_p,
-    const void *buf, hg_size_t buf_size);
+    const void *buf, hg_size_t buf_size, uint64_t flags);
 
 /**
- * Initiate a new HG RPC using the specified function ID and the local/remote
- * target defined by addr. The HG handle created can be used to query input
- * and output buffers, as well as issuing the RPC by using HG_Core_forward().
- * After completion the handle must be freed using HG_Core_destroy().
+ * Initiate a new HG RPC using the specified function ID and the
+ * local/remote target defined by addr. The HG handle created can be used to
+ * query input and output buffers, as well as issuing the RPC by using
+ * HG_Core_forward(). After completion the handle must be freed using
+ * HG_Core_destroy().
  *
  * \param context [IN]          pointer to HG core context
  * \param addr [IN]             target address
@@ -846,7 +854,8 @@ HG_Core_get_data(hg_core_handle_t handle) HG_WARN_UNUSED_RESULT;
 /**
  * Get info from handle.
  *
- * \remark Users must call HG_Core_addr_dup() to safely re-use the addr field.
+ * \remark Users must call HG_Core_addr_dup() to safely re-use the addr
+ * field.
  *
  * \param handle [IN]           HG handle
  *
@@ -856,8 +865,8 @@ static HG_INLINE const struct hg_core_info *
 HG_Core_get_info(hg_core_handle_t handle) HG_WARN_UNUSED_RESULT;
 
 /**
- * Allows upper layers to retrieve cached RPC data from an existing HG handle.
- * Only valid if HG_Core_register_data() has been previously called.
+ * Allows upper layers to retrieve cached RPC data from an existing HG
+ * handle. Only valid if HG_Core_register_data() has been previously called.
  *
  * \param handle [IN]           HG handle
  *
@@ -868,7 +877,8 @@ HG_Core_get_rpc_data(hg_core_handle_t handle) HG_WARN_UNUSED_RESULT;
 
 /**
  * Set target context ID that will receive and process the RPC request
- * (ID is defined on target context creation, see HG_Core_context_create_id()).
+ * (ID is defined on target context creation, see
+ * HG_Core_context_create_id()).
  *
  * \param handle [IN]           HG handle
  * \param id [IN]               user-defined target context ID
@@ -889,8 +899,8 @@ static HG_INLINE size_t
 HG_Core_get_input_payload_size(hg_core_handle_t handle);
 
 /**
- * Get input buffer from handle that can be used for serializing/deserializing
- * parameters.
+ * Get input buffer from handle that can be used for
+ * serializing/deserializing parameters.
  *
  * \param handle [IN]           HG handle
  * \param in_buf_p [OUT]        pointer to input buffer
@@ -926,8 +936,8 @@ static HG_INLINE size_t
 HG_Core_get_output_payload_size(hg_core_handle_t handle);
 
 /**
- * Get output buffer from handle that can be used for serializing/deserializing
- * parameters.
+ * Get output buffer from handle that can be used for
+ * serializing/deserializing parameters.
  *
  * \param handle [IN]           HG handle
  * \param out_buf_p [OUT]       pointer to output buffer
@@ -940,13 +950,12 @@ HG_Core_get_output(
     hg_core_handle_t handle, void **out_buf_p, hg_size_t *out_buf_size_p);
 
 /**
- * Forward a call using an existing HG handle. Input and output buffers can be
- * queried from the handle to serialize/deserialize parameters.
- * Additionally, a bulk handle can be passed if the size of the input is larger
- * than the queried input buffer size.
- * After completion, the handle must be freed using HG_Core_destroy(), the user
- * callback is placed into a completion queue and can be triggered using
- * HG_Core_trigger().
+ * Forward a call using an existing HG handle. Input and output buffers can
+ * be queried from the handle to serialize/deserialize parameters.
+ * Additionally, a bulk handle can be passed if the size of the input is
+ * larger than the queried input buffer size. After completion, the handle
+ * must be freed using HG_Core_destroy(), the user callback is placed into a
+ * completion queue and can be triggered using HG_Core_trigger().
  *
  * \param handle [IN]           HG handle
  * \param callback [IN]         pointer to function callback
@@ -960,8 +969,8 @@ HG_Core_forward(hg_core_handle_t handle, hg_core_cb_t callback, void *arg,
     uint8_t flags, hg_size_t payload_size);
 
 /**
- * Respond back to the origin. The output buffer, which can be used to encode
- * the response, must first be queried using HG_Core_get_output().
+ * Respond back to the origin. The output buffer, which can be used to
+ * encode the response, must first be queried using HG_Core_get_output().
  * After completion, the user callback is placed into a completion queue and
  * can be triggered using HG_Core_trigger().
  *
@@ -988,16 +997,16 @@ HG_Core_cancel(hg_core_handle_t handle);
 
 /**
  * (Deprecated in favor of HG_Core_event_progress())
- * Try to progress RPC execution for at most timeout until timeout is reached or
- * any completion has occurred.
- * Progress should not be considered as wait, in the sense that it cannot be
- * assumed that completion of a specific operation will occur only when
- * progress is called.
+ * Try to progress RPC execution for at most timeout until timeout is
+ * reached or any completion has occurred. Progress should not be considered
+ * as wait, in the sense that it cannot be assumed that completion of a
+ * specific operation will occur only when progress is called.
  *
  * \param context [IN]          pointer to HG core context
  * \param timeout [IN]          timeout (in milliseconds)
  *
- * \return HG_SUCCESS if any completion has occurred / HG error code otherwise
+ * \return HG_SUCCESS if any completion has occurred / HG error code
+ * otherwise
  */
 HG_PUBLIC hg_return_t
 HG_Core_progress(hg_core_context_t *context, unsigned int timeout);
@@ -1036,8 +1045,8 @@ HG_Core_event_get_wait_fd(
  * Used to signal when it is safe to block on the file descriptor of the
  * context's wait object or if there is already work that can be progressed.
  * Calling HG_Core_event_ready() is mandatory before any call to
- * select/poll/epoll (or equivalent) or the callee may not be signaled during
- * these calls.
+ * select/poll/epoll (or equivalent) or the callee may not be signaled
+ * during these calls.
  *
  * \param context [IN/OUT]      pointer to HG core context
  *
@@ -1048,11 +1057,12 @@ HG_Core_event_ready(hg_core_context_t *context) HG_WARN_UNUSED_RESULT;
 
 /**
  * Progress communication by placing any completed RPC events into the
- * context's completion queue. Completed operations's callbacks can be triggered
- * by a call to HG_Core_event_trigger().
+ * context's completion queue. Completed operations's callbacks can be
+ * triggered by a call to HG_Core_event_trigger().
  *
  * \param context [IN/OUT]      pointer to HG core context
- * \param count_p [OUT]         number of entries in context completion queue
+ * \param count_p [OUT]         number of entries in context completion
+ * queue
  *
  * \return HG_SUCCESS or corresponding HG error code
  */

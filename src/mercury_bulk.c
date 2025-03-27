@@ -25,12 +25,6 @@
 /* Limit for number of segments statically allocated */
 #define HG_BULK_STATIC_MAX (8)
 
-/* Additional internal bulk flags (can hold up to 8 bits) */
-#define HG_BULK_ALLOC (1 << 4) /* memory is allocated */
-#define HG_BULK_BIND  (1 << 5) /* address is bound to segment */
-#define HG_BULK_REGV  (1 << 6) /* single registration for multiple segments */
-#define HG_BULK_VIRT  (1 << 7) /* addresses are virtual */
-
 /* Op ID status bits */
 #define HG_BULK_OP_COMPLETED (1 << 0)
 #define HG_BULK_OP_CANCELED  (1 << 1)
@@ -1387,6 +1381,7 @@ hg_bulk_deserialize(hg_core_class_t *core_class, struct hg_bulk **hg_bulk_p,
     /* Address information */
     if (hg_bulk->desc.info.flags & HG_BULK_BIND) {
         hg_size_t serialize_size;
+        uint64_t addr_flags = 0;
 
         HG_LOG_SUBSYS_DEBUG(
             bulk, "HG_BULK_BIND flag set, deserializing address information");
@@ -1394,8 +1389,12 @@ hg_bulk_deserialize(hg_core_class_t *core_class, struct hg_bulk **hg_bulk_p,
         HG_BULK_DECODE(
             error, ret, buf_ptr, buf_size_left, &serialize_size, hg_size_t);
 
-        ret = HG_Core_addr_deserialize(
-            hg_bulk->core_class, &hg_bulk->addr, buf_ptr, buf_size_left);
+        if (hg_bulk->desc.info.flags & HG_BULK_FIREWALL_ADDR) {
+            addr_flags |= NA_FIREWALL_ADDR;
+        }
+
+        ret = HG_Core_addr_deserialize(hg_bulk->core_class, &hg_bulk->addr,
+            buf_ptr, buf_size_left, addr_flags);
         HG_CHECK_SUBSYS_HG_ERROR(
             bulk, error, ret, "Could not deserialize address");
         buf_ptr += serialize_size;

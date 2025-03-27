@@ -54,6 +54,11 @@ enum na_mem_type {
     NA_MEM_TYPE_UNKNOWN = NA_MEM_TYPE_MAX
 };
 
+/* Flags for addr_deserialize() */
+enum na_addr_flags {
+    NA_FIREWALL_ADDR = (1 << 0),
+};
+
 /* Init info */
 struct na_init_info {
     /* Preferred IP subnet to use. */

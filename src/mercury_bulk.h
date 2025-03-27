@@ -18,12 +18,6 @@
 /* Public Macros */
 /*****************/
 
-/* The memory attributes associated with the bulk handle
- * can be defined as read only, write only or read-write */
-#define HG_BULK_READ_ONLY  (1 << 0)
-#define HG_BULK_WRITE_ONLY (1 << 1)
-#define HG_BULK_READWRITE  (HG_BULK_READ_ONLY | HG_BULK_WRITE_ONLY)
-
 /*********************/
 /* Public Prototypes */
 /*********************/
@@ -200,7 +194,7 @@ HG_Bulk_get_segment_count(hg_bulk_t handle);
  *
  * \return Non-negative value
  */
-static HG_INLINE uint8_t
+static HG_INLINE uint32_t
 HG_Bulk_get_flags(hg_bulk_t handle);
 
 /**
@@ -344,7 +338,26 @@ HG_Bulk_cancel(hg_op_id_t op_id);
 struct hg_bulk_desc_info {
     hg_size_t len;          /* Size of region */
     uint32_t segment_count; /* Segment count */
-    uint8_t flags;          /* Flags of operation access */
+    uint32_t flags;         /* Flags of operation access */
+};
+
+/* Definition of hg_bulk_desc_info::flags */
+enum bulk_flags {
+    /* The memory attributes associated with the bulk handle
+     * can be defined as read only, write only or read-write */
+    HG_BULK_READ_ONLY     = (1 << 0),
+    HG_BULK_WRITE_ONLY    = (1 << 1),
+    HG_BULK_READWRITE     = (HG_BULK_READ_ONLY | HG_BULK_WRITE_ONLY),
+
+    /* Additional internal bulk flags */
+    HG_BULK_EAGER         = (1 << 2), /* embeds data along descriptor */
+    HG_BULK_SM            = (1 << 3), /* bulk transfer through shared-memory */
+    HG_BULK_ALLOC         = (1 << 4), /* memory is allocated */
+    HG_BULK_BIND          = (1 << 5), /* address is bound to segment */
+    HG_BULK_REGV          = (1 << 6), /* single registration for multiple segments */
+    HG_BULK_VIRT          = (1 << 7), /* addresses are virtual */
+
+    HG_BULK_FIREWALL_ADDR = (1 << 8), /* if the origin is behind firewall */
 };
 
 /*---------------------------------------------------------------------------*/
@@ -362,7 +375,7 @@ HG_Bulk_get_segment_count(hg_bulk_t handle)
 }
 
 /*---------------------------------------------------------------------------*/
-static HG_INLINE uint8_t
+static HG_INLINE uint32_t
 HG_Bulk_get_flags(hg_bulk_t handle)
 {
     return ((struct hg_bulk_desc_info *) handle)->flags;
