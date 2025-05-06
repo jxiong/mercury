@@ -1987,6 +1987,8 @@ hg_bulk_transfer(hg_core_context_t *core_context, hg_cb_t callback, void *arg,
         ret = hg_bulk_transfer_self(op, origin_segments, origin_count,
             origin_offset, local_segments, local_count, local_offset, size,
             hg_bulk_op_id);
+        HG_CHECK_SUBSYS_HG_ERROR(
+            bulk, error, ret, "Could not transfer bulk op ID");
     } else {
         struct hg_bulk_na_mem_desc *origin_mem_descs, *local_mem_descs;
         na_mem_handle_t **origin_mem_handles, **local_mem_handles;
@@ -2025,6 +2027,8 @@ hg_bulk_transfer(hg_core_context_t *core_context, hg_cb_t callback, void *arg,
             origin_segments, origin_count, origin_mem_handles, origin_flags,
             origin_offset, local_segments, local_count, local_mem_handles,
             local_flags, local_offset, size, hg_bulk_op_id);
+        HG_CHECK_SUBSYS_HG_ERROR(
+            bulk, error, ret, "Could not transfer bulk op ID");
     }
 
     /* Assign op_id */
